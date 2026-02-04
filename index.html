@@ -3,343 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS M.4: การเปลี่ยนแปลงของเทคโนโลยี (ฉบับแก้ไขรูปภาพ)</title>
+    <title>CS M.4: การเปลี่ยนแปลงของเทคโนโลยี</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; }
-        h1, h2, h3, h4, h5, h6, button { font-family: 'Kanit', sans-serif; }
-        
+        body { font-family: 'Kanit', sans-serif; background-color: #f0f9ff; }
         .glass-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
         }
+        .fade-enter-active, .fade-leave-active { transition: opacity 0.4s ease; }
+        .fade-enter-from, .fade-leave-to { opacity: 0; }
+        .slide-up-enter-active { transition: all 0.5s ease-out; }
+        .slide-up-enter-from { opacity: 0; transform: translateY(20px); }
         
-        .content-enter-active, .content-leave-active { transition: all 0.4s ease; }
-        .content-enter-from, .content-leave-to { opacity: 0; transform: translateY(10px); }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .hero-image {
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+        }
+        /* Loading Skeleton Animation */
+        .skeleton {
+            animation: pulse-bg 1.5s infinite;
+            background-color: #e2e8f0;
+        }
+        @keyframes pulse-bg {
+            0% { background-color: #e2e8f0; }
+            50% { background-color: #cbd5e1; }
+            100% { background-color: #e2e8f0; }
+        }
     </style>
 </head>
-<body class="text-slate-800 bg-slate-100 min-h-screen">
+<body class="text-slate-800 bg-slate-50 min-h-screen">
 
-<div id="app" class="min-h-screen flex flex-col relative">
+<div id="app" class="min-h-screen flex flex-col relative overflow-hidden">
 
-    <nav class="bg-white text-indigo-900 p-4 shadow-md sticky top-0 z-50">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] right-[-20%] w-[600px] h-[600px] rounded-full bg-indigo-200 mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-200 mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" style="animation-delay: 2s;"></div>
+    </div>
+
+    <nav class="bg-indigo-600/90 backdrop-blur-md text-white p-4 shadow-lg sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer" @click="currentView = 'menu'">
-                <div class="bg-indigo-600 text-white p-2 rounded-lg">
-                    <i class="ph ph-books text-2xl"></i>
-                </div>
-                <div class="leading-tight">
-                    <h1 class="text-lg font-bold">Technological Change</h1>
-                    <span class="text-xs text-slate-500 block">เนื้อหาฉบับสมบูรณ์ (สสวท. ม.4)</span>
+            <div class="flex items-center gap-2 cursor-pointer group" @click="currentView = 'menu'">
+                <i class="ph ph-robot text-3xl group-hover:rotate-12 transition"></i>
+                <div>
+                    <h1 class="text-xl font-bold leading-none">Tech Change</h1>
+                    <span class="text-xs opacity-80">วิทยาการคำนวณ ม.4</span>
                 </div>
             </div>
-            <div class="hidden md:flex gap-2">
-                <button v-for="item in navItems" :key="item.view"
-                        @click="currentView = item.view"
-                        class="px-4 py-2 rounded-full text-sm font-medium transition duration-200"
-                        :class="currentView === item.view ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-600 hover:bg-slate-100'">
-                    {{ item.label }}
-                </button>
+            <div class="hidden md:flex gap-6 text-sm font-medium">
+                <button @click="currentView = 'causes'" :class="currentView === 'causes' ? 'text-yellow-300 font-bold' : 'hover:text-yellow-200 opacity-80 hover:opacity-100 transition'">สาเหตุการเปลี่ยนแปลง</button>
+                <button @click="currentView = 'impacts'" :class="currentView === 'impacts' ? 'text-yellow-300 font-bold' : 'hover:text-yellow-200 opacity-80 hover:opacity-100 transition'">ผลกระทบ</button>
+                <button @click="currentView = 'quiz'" :class="currentView === 'quiz' ? 'text-yellow-300 font-bold' : 'hover:text-yellow-200 opacity-80 hover:opacity-100 transition'">แบบทดสอบ</button>
             </div>
         </div>
     </nav>
 
-    <main class="flex-grow container mx-auto p-4 md:py-8 max-w-7xl">
+    <main class="flex-grow container mx-auto p-4 md:py-8 z-10">
 
-        <transition name="content">
-        <div v-if="currentView === 'menu'" class="flex flex-col items-center justify-center min-h-[80vh]">
-            <div class="text-center mb-12 animate__animated animate__fadeInDown">
-                <span class="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full text-sm font-bold tracking-wide mb-4 inline-block">บทที่ 2</span>
-                <h1 class="text-4xl md:text-6xl font-black text-slate-800 mb-6 leading-tight">
-                    การเปลี่ยนแปลงของ<span class="text-indigo-600">เทคโนโลยี</span>
-                </h1>
-                <p class="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                    "เทคโนโลยีมีการเปลี่ยนแปลงตลอดเวลา ขึ้นอยู่กับสาเหตุหรือปัจจัยต่าง ๆ ได้แก่ ความก้าวหน้าของศาสตร์ต่าง ๆ ปัญหาหรือความต้องการของมนุษย์ สภาพเศรษฐกิจ สังคม วัฒนธรรม และสิ่งแวดล้อม"
-                </p>
+        <transition name="fade">
+        <div v-if="currentView === 'menu'" class="flex flex-col items-center pt-4 pb-12">
+            
+            <div class="w-full max-w-4xl mb-8 relative rounded-3xl overflow-hidden shadow-2xl animate__animated animate__fadeIn bg-slate-200 min-h-[300px]">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop" 
+                     alt="Technology banner" 
+                     @error="handleImageError"
+                     class="w-full h-64 md:h-80 object-cover hero-image opacity-90 transition-opacity duration-500">
+                <div class="absolute bottom-0 left-0 p-8 w-full text-center">
+                     <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-800 mb-2 drop-shadow-sm">การเปลี่ยนแปลงของเทคโนโลยี</h1>
+                     <p class="text-lg text-slate-700 max-w-xl mx-auto font-medium drop-shadow-sm bg-white/60 backdrop-blur-sm rounded-lg py-1 px-4 inline-block">
+                        เรียนรู้สาเหตุและวิเคราะห์ผลกระทบ เพื่อการใช้ชีวิตในยุคดิจิทัลอย่างเท่าทัน
+                    </p>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full px-4 animate__animated animate__fadeInUp animate__delay-1s">
-                <div @click="currentView = 'factors'" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition cursor-pointer border-b-8 border-blue-500 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-150">
-                        <i class="ph ph-tree-structure text-8xl text-blue-500"></i>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl animate__animated animate__fadeInUp animate__delay-1s px-4 md:px-0">
+                <div @click="currentView = 'causes'" class="glass-card p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition cursor-pointer group border-t-4 border-blue-500">
+                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:bg-blue-600 group-hover:text-white transition shadow-sm">
+                        <i class="ph ph-gear-six animate-spin-slow"></i>
                     </div>
-                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-6 text-3xl group-hover:bg-blue-600 group-hover:text-white transition">
-                        <i class="ph ph-list-magnifying-glass"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">1. สาเหตุและปัจจัย</h3>
-                    <p class="text-slate-500">วิเคราะห์ 5 ปัจจัยหลักที่ทำให้เทคโนโลยีเปลี่ยนไป (หน้า 3-9)</p>
+                    <h3 class="text-xl font-bold mb-2">1. สาเหตุและปัจจัย</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">ทำไมเทคโนโลยีต้องเปลี่ยน? สำรวจอิทธิพลจากมนุษย์ สังคม และสิ่งแวดล้อม</p>
                 </div>
 
-                <div @click="currentView = 'disruptive'" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition cursor-pointer border-b-8 border-purple-500 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-150">
-                        <i class="ph ph-lightning text-8xl text-purple-500"></i>
+                <div @click="currentView = 'impacts'" class="glass-card p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition cursor-pointer group border-t-4 border-orange-500">
+                    <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:bg-orange-600 group-hover:text-white transition shadow-sm">
+                        <i class="ph ph-scales"></i>
                     </div>
-                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mb-6 text-3xl group-hover:bg-purple-600 group-hover:text-white transition">
-                        <i class="ph ph-rocket-launch"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">2. Disruptive Tech</h3>
-                    <p class="text-slate-500">เทคโนโลยีเปลี่ยนโลก ที่เข้ามาแทนที่ของเดิม (หน้า 10)</p>
+                    <h3 class="text-xl font-bold mb-2">2. วิเคราะห์ผลกระทบ</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">เปรียบเทียบข้อดี-ข้อเสีย ต่อการดำเนินชีวิต สังคม และสิ่งแวดล้อม</p>
                 </div>
 
-                <div @click="currentView = 'medical'" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition cursor-pointer border-b-8 border-red-500 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-150">
-                        <i class="ph ph-heartbeat text-8xl text-red-500"></i>
+                <div @click="currentView = 'quiz'" class="glass-card p-6 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-2 transition cursor-pointer group border-t-4 border-purple-500">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:bg-purple-600 group-hover:text-white transition shadow-sm">
+                        <i class="ph ph-clipboard-text"></i>
                     </div>
-                    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 mb-6 text-3xl group-hover:bg-red-600 group-hover:text-white transition">
-                        <i class="ph ph-first-aid"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">3. กรณีศึกษาการแพทย์</h3>
-                    <p class="text-slate-500">วิวัฒนาการเครื่องมือแพทย์และการรักษา (หน้า 11-13)</p>
-                </div>
-
-                <div @click="currentView = 'environment'" class="bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition cursor-pointer border-b-8 border-green-500 group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-150">
-                        <i class="ph ph-leaf text-8xl text-green-500"></i>
-                    </div>
-                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 mb-6 text-3xl group-hover:bg-green-600 group-hover:text-white transition">
-                        <i class="ph ph-recycle"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-2">4. สิ่งแวดล้อม</h3>
-                    <p class="text-slate-500">เทคโนโลยีเพื่อแก้ปัญหามลพิษและขยะ (หน้า 14-15)</p>
+                    <h3 class="text-xl font-bold mb-2">3. แบบทดสอบ</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">ทบทวนความเข้าใจผ่านแบบทดสอบท้ายบท 10 ข้อ</p>
                 </div>
             </div>
         </div>
         </transition>
 
-        <transition name="content">
-        <div v-if="currentView === 'factors'" class="pb-20">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-indigo-900 border-l-8 border-indigo-600 pl-4">1. สาเหตุและปัจจัยการเปลี่ยนแปลง</h2>
-                <p class="text-slate-600 mt-2 ml-6">เทคโนโลยีเปลี่ยนไปเพราะ 5 ปัจจัยหลักดังนี้</p>
-            </div>
+        <transition name="fade">
+        <div v-if="currentView === 'causes'" class="max-w-6xl mx-auto pb-12">
+            <button @click="currentView = 'menu'" class="mb-4 text-slate-500 hover:text-indigo-600 flex items-center gap-1 font-medium transition"><i class="ph ph-arrow-left"></i> กลับเมนูหลัก</button>
+            
+            <h2 class="text-3xl font-bold text-indigo-800 mb-8 flex items-center gap-2">
+                <i class="ph ph-list-magnifying-glass text-indigo-600"></i>
+                5 ปัจจัยหลักที่ทำให้เทคโนโลยีเปลี่ยนแปลง
+            </h2>
 
-            <div class="flex flex-col lg:flex-row gap-8">
-                <div class="lg:w-1/3 space-y-4">
-                    <button v-for="(f, idx) in factors" :key="idx" 
-                            @click="activeFactor = f"
-                            class="w-full text-left p-5 rounded-2xl transition-all duration-300 flex items-center gap-4 border-2 group"
-                            :class="activeFactor.title === f.title ? 'bg-white border-indigo-600 shadow-xl scale-105 z-10' : 'bg-white/50 border-transparent hover:bg-white hover:shadow-md'">
-                        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-colors"
-                             :class="activeFactor.title === f.title ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-500 group-hover:bg-indigo-100 group-hover:text-indigo-600'">
-                            <i :class="f.icon"></i>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-4 space-y-3">
+                    <div v-for="(factor, idx) in factors" :key="idx" 
+                         @click="activeFactor = factor"
+                         class="p-4 rounded-xl cursor-pointer transition-all flex items-center gap-4 border shadow-sm group"
+                         :class="activeFactor.title === factor.title ? 'bg-indigo-600 text-white border-indigo-600 shadow-md transform scale-105' : 'bg-white/80 hover:bg-indigo-50 border-white backdrop-blur-sm'">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl transition"
+                             :class="activeFactor.title === factor.title ? 'bg-white/20 text-white' : 'bg-indigo-100 text-indigo-600 group-hover:bg-indigo-200'">
+                            <i :class="factor.icon"></i>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-lg" :class="activeFactor.title === f.title ? 'text-indigo-900' : 'text-slate-600'">{{ f.title }}</h4>
-                            <p class="text-xs text-slate-400">คลิกเพื่อดูรายละเอียด</p>
-                        </div>
-                    </button>
+                        <span class="font-bold text-lg">{{ factor.title }}</span>
+                    </div>
                 </div>
 
-                <div class="lg:w-2/3">
-                    <div :key="activeFactor.title" class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 h-full animate__animated animate__fadeIn">
-                        
-                        <div class="relative h-64 rounded-2xl overflow-hidden mb-8 shadow-md group bg-slate-200">
-                            <img :src="activeFactor.image" 
-                                 @error="handleImgError"
-                                 class="w-full h-full object-cover transition duration-700 group-hover:scale-105" 
-                                 alt="Example Image">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6">
-                                <div>
-                                    <span class="bg-indigo-600 text-white px-3 py-1 rounded-md text-xs font-bold uppercase mb-2 inline-block">ตัวอย่างการเปลี่ยนแปลง</span>
-                                    <h3 class="text-white text-2xl font-bold">{{ activeFactor.exampleTitle }}</h3>
+                <div class="lg:col-span-8">
+                    <transition name="slide-up" mode="out-in">
+                        <div :key="activeFactor.title" class="bg-white rounded-3xl shadow-xl h-full border border-slate-100 relative overflow-hidden flex flex-col">
+                            
+                            <div class="h-56 w-full relative overflow-hidden bg-slate-200">
+                                <img :src="activeFactor.image" 
+                                     @error="handleImageError"
+                                     :alt="activeFactor.title" 
+                                     class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-4 left-6 text-white">
+                                    <div class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2 uppercase tracking-wide bg-white/20 backdrop-blur-md">
+                                        {{ activeFactor.category }}
+                                    </div>
+                                    <h3 class="text-3xl font-bold drop-shadow-lg">{{ activeFactor.title }}</h3>
+                                </div>
+                            </div>
+                            
+                            <div class="p-8 relative z-10 flex-grow flex flex-col justify-between">
+                                <p class="text-lg text-slate-700 leading-relaxed mb-8">
+                                    {{ activeFactor.description }}
+                                </p>
+                                
+                                <div class="bg-slate-50 rounded-2xl p-6 border-l-4 shadow-inner" :class="activeFactor.borderColor">
+                                    <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2 text-lg">
+                                        <i class="ph ph-lightbulb text-2xl" :class="activeFactor.textColor"></i> ตัวอย่างการเปลี่ยนแปลง:
+                                    </h4>
+                                    <p class="text-slate-700 leading-relaxed font-medium">{{ activeFactor.example }}</p>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="prose max-w-none text-slate-700">
-                            <h3 class="text-2xl font-bold text-indigo-900 mb-4">{{ activeFactor.title }}</h3>
-                            <p class="leading-loose text-lg">{{ activeFactor.description }}</p>
-                            
-                            <div class="mt-8 bg-slate-50 p-6 rounded-2xl border-l-4 border-indigo-500">
-                                <h4 class="font-bold text-indigo-900 mb-2 flex items-center gap-2">
-                                    <i class="ph ph-info text-xl"></i> รายละเอียดตัวอย่าง:
-                                </h4>
-                                <p class="text-slate-600">{{ activeFactor.exampleDetail }}</p>
-                            </div>
-                        </div>
-
-                    </div>
+                    </transition>
                 </div>
             </div>
         </div>
         </transition>
 
-        <transition name="content">
-        <div v-if="currentView === 'disruptive'" class="pb-20">
-            <div class="max-w-4xl mx-auto">
-                <div class="text-center mb-12">
-                    <h2 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
-                        เทคโนโลยีเปลี่ยนโลก
-                    </h2>
-                    <h3 class="text-2xl text-slate-500 font-light">(Disruptive Technology)</h3>
-                </div>
-
-                <div class="bg-white rounded-3xl p-10 shadow-2xl border border-purple-100 mb-12 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-purple-100 rounded-full blur-3xl opacity-50 -mr-16 -mt-16"></div>
-                    
-                    <h4 class="text-xl font-bold text-purple-800 mb-4 relative z-10">📌 นิยาม (จากหนังสือเรียน)</h4>
-                    <p class="text-xl text-slate-700 leading-relaxed relative z-10 font-medium">
-                        "เทคโนโลยีที่เกิดขึ้นอย่างทันที และได้ผ่านกระบวนการพัฒนา จนกลายเป็นเทคโนโลยีที่มีประโยชน์กับประชากรส่วนใหญ่ <span class="bg-purple-100 px-2 rounded">ซึ่งเข้ามาแทนที่เทคโนโลยีในอดีต</span>"
-                    </p>
-                </div>
-
-                <h3 class="text-2xl font-bold text-slate-800 mb-6 text-center">ตัวอย่างเทคโนโลยีเปลี่ยนโลก</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div v-for="(item, i) in disruptItems" :key="i" class="bg-white p-6 rounded-2xl shadow-md border hover:border-purple-400 transition group flex items-center gap-6">
-                        <div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 shadow-inner bg-slate-100">
-                            <img :src="item.image" @error="handleImgError" class="w-full h-full object-cover group-hover:scale-110 transition">
-                        </div>
-                        <div>
-                            <h4 class="text-lg font-bold text-slate-800 mb-1">{{ item.name }}</h4>
-                            <p class="text-slate-500 text-sm">{{ item.desc }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </transition>
-
-        <transition name="content">
-        <div v-if="currentView === 'medical'" class="pb-20">
-            <div class="mb-10 text-center">
-                <h2 class="text-3xl font-bold text-red-600">กรณีศึกษา: เทคโนโลยีทางการแพทย์</h2>
-                <p class="text-slate-500 mt-2">การพัฒนาเพื่อความปลอดภัย สะดวก และรวดเร็ว</p>
+        <transition name="fade">
+        <div v-if="currentView === 'impacts'" class="max-w-5xl mx-auto pb-12">
+            <button @click="currentView = 'menu'" class="mb-4 text-slate-500 hover:text-indigo-600 flex items-center gap-1 font-medium transition"><i class="ph ph-arrow-left"></i> กลับเมนูหลัก</button>
+            
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 inline-block">ผลกระทบของเทคโนโลยี</h2>
+                <p class="text-gray-600 mt-4 text-lg max-w-2xl mx-auto">วิเคราะห์ เปรียบเทียบข้อดี-ข้อเสีย เพื่อการตัดสินใจเลือกใช้อย่างชาญฉลาด</p>
             </div>
 
-            <div class="flex justify-center gap-4 mb-10 flex-wrap">
-                <button v-for="c in medicalCases" :key="c.id" 
-                        @click="activeMedical = c"
-                        class="px-6 py-3 rounded-full font-bold transition shadow-sm flex items-center gap-2"
-                        :class="activeMedical.id === c.id ? 'bg-red-600 text-white shadow-red-200 shadow-lg scale-105' : 'bg-white text-slate-600 hover:bg-red-50'">
-                    <i :class="c.icon"></i> {{ c.title }}
+            <div class="flex justify-center gap-4 overflow-x-auto pb-4 mb-8">
+                <button v-for="tech in impactTechs" :key="tech.id"
+                        @click="activeImpact = tech"
+                        class="flex-shrink-0 px-6 py-3 rounded-full font-bold transition whitespace-nowrap shadow-sm border flex items-center gap-2 group"
+                        :class="activeImpact.id === tech.id ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white border-transparent shadow-orange-200/50 shadow-lg scale-105' : 'bg-white text-gray-600 hover:bg-orange-50 border-gray-200 hover:border-orange-200'">
+                    <i :class="tech.icon" class="text-xl group-hover:scale-110 transition"></i>
+                    {{ tech.name }}
                 </button>
             </div>
 
-            <div :key="activeMedical.id" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 animate__animated animate__fadeIn">
-                <div class="h-64 relative bg-slate-200">
-                    <img :src="activeMedical.image" @error="handleImgError" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-8">
-                        <div>
-                            <h3 class="text-3xl font-bold text-white mb-2">{{ activeMedical.title }}</h3>
-                            <p class="text-red-100 text-lg">{{ activeMedical.concept }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    <div class="lg:col-span-1 space-y-6">
-                        <div class="bg-red-50 p-6 rounded-2xl border border-red-100">
-                            <h4 class="font-bold text-red-800 mb-3">สาเหตุการเปลี่ยนแปลง</h4>
-                            <p class="text-slate-700 leading-relaxed">{{ activeMedical.reason }}</p>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-800 mb-3">ศาสตร์ที่เกี่ยวข้อง</h4>
-                            <div class="flex flex-wrap gap-2">
-                                <span v-for="s in activeMedical.sciences" class="bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-sm font-medium border">
-                                    {{ s }}
-                                </span>
+            <transition name="slide-up" mode="out-in">
+                <div :key="activeImpact.id" class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+                    
+                    <div class="h-64 w-full relative bg-slate-200">
+                        <img :src="activeImpact.image" 
+                             @error="handleImageError"
+                             :alt="activeImpact.name" 
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/40 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-8 text-white flex items-end gap-6">
+                            <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl text-white shadow-lg bg-white/10 backdrop-blur-md border border-white/20">
+                                <i :class="activeImpact.icon"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-4xl font-bold mb-2 drop-shadow-md">{{ activeImpact.name }}</h3>
+                                <p class="text-white/90 text-lg font-medium drop-shadow-sm">{{ activeImpact.desc }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="lg:col-span-2">
-                        <h4 class="font-bold text-slate-800 mb-6 text-xl">ลำดับวิวัฒนาการ</h4>
-                        <div class="space-y-6 relative pl-8 border-l-2 border-slate-200 ml-4">
-                            <div v-for="(step, idx) in activeMedical.steps" :key="idx" class="relative">
-                                <div class="absolute -left-[41px] top-0 w-6 h-6 rounded-full border-4 border-white shadow-sm" :class="idx === activeMedical.steps.length - 1 ? 'bg-red-600' : 'bg-slate-300'"></div>
-                                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                                    <span class="text-xs font-bold uppercase tracking-wider mb-1 block" :class="idx === activeMedical.steps.length - 1 ? 'text-red-600' : 'text-slate-400'">{{ step.era }}</span>
-                                    <h5 class="text-lg font-bold text-slate-800 mb-2">{{ step.name }}</h5>
-                                    <p class="text-slate-600 text-sm">{{ step.desc }}</p>
-                                </div>
-                            </div>
+                    <div class="p-8 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-green-50/80 rounded-2xl p-6 border border-green-200 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 -mt-4 -mr-4 text-green-200/50 text-9xl"><i class="ph ph-thumbs-up-fill"></i></div>
+                            <h4 class="text-green-800 font-extrabold text-xl mb-6 flex items-center gap-3 relative z-10">
+                                <span class="bg-green-200 p-2 rounded-lg"><i class="ph ph-plus-circle text-green-600"></i></span> 
+                                ผลกระทบทางบวก (ข้อดี)
+                            </h4>
+                            <ul class="space-y-4 relative z-10">
+                                <li v-for="pro in activeImpact.pros" class="flex items-start gap-3 text-slate-700 bg-white/60 p-3 rounded-xl">
+                                    <i class="ph ph-check-circle-fill text-green-500 text-xl mt-0.5 flex-shrink-0"></i>
+                                    <span class="font-medium">{{ pro }}</span>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </transition>
 
-        <transition name="content">
-        <div v-if="currentView === 'environment'" class="pb-20">
-            <div class="mb-10 text-center">
-                <h2 class="text-3xl font-bold text-green-700">กรณีศึกษา: สิ่งแวดล้อม</h2>
-                <p class="text-slate-500 mt-2">เทคโนโลยีเพื่อโลกที่ยั่งยืน</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-200 flex flex-col h-full">
-                    <div class="h-56 relative bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1605600659908-0ef719419d42?q=80&w=800&auto=format&fit=crop" @error="handleImgError" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                            <h3 class="text-3xl font-bold text-white drop-shadow-md">1. บรรจุภัณฑ์</h3>
-                        </div>
-                    </div>
-                    <div class="p-8 flex-grow flex flex-col">
-                        <div class="mb-6">
-                            <h4 class="font-bold text-slate-800 mb-2">ปัญหา:</h4>
-                            <p class="text-slate-600">การใช้บรรจุภัณฑ์จากโฟม เป็นมลพิษและทำลายสิ่งแวดล้อม ย่อยสลายยาก</p>
-                        </div>
-                        <div class="mt-auto bg-green-50 p-6 rounded-2xl border border-green-100">
-                            <h4 class="font-bold text-green-800 mb-4 flex items-center gap-2"><i class="ph ph-check-circle"></i> การเปลี่ยนแปลง:</h4>
-                            <p class="text-slate-700 mb-4">
-                                พัฒนาเทคโนโลยีผลิตภัณฑ์รักษ์โลกจาก <strong>"ใบไม้สด"</strong> ซึ่งย่อยสลายได้เองตามธรรมชาติ
-                            </p>
-                            <div class="flex gap-2">
-                                <span class="bg-white px-3 py-1 rounded border text-sm text-green-700 font-bold">ใบทองกวาว</span>
-                                <span class="bg-white px-3 py-1 rounded border text-sm text-green-700 font-bold">ใบไทร</span>
-                                <span class="bg-white px-3 py-1 rounded border text-sm text-green-700 font-bold">ใบสัก</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-200 flex flex-col h-full">
-                    <div class="h-56 relative bg-slate-200">
-                        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop" @error="handleImgError" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                            <h3 class="text-3xl font-bold text-white drop-shadow-md">2. การจัดการขยะ</h3>
-                        </div>
-                    </div>
-                    <div class="p-8 flex-grow flex flex-col">
-                        <div class="mb-6">
-                            <h4 class="font-bold text-slate-800 mb-2">ปัญหา:</h4>
-                            <p class="text-slate-600">ปริมาณขยะเพิ่มขึ้น ภาคครัวเรือนไม่คัดแยกขยะก่อนทิ้ง การคัดแยกแบบเดิมไม่มีประสิทธิภาพ</p>
-                        </div>
-                        <div class="mt-auto bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                            <h4 class="font-bold text-blue-800 mb-4 flex items-center gap-2"><i class="ph ph-check-circle"></i> การเปลี่ยนแปลง:</h4>
-                            <p class="text-slate-700 mb-2">
-                                สร้าง <strong>"ตู้รับซื้อขวดอัตโนมัติ"</strong> (Reverse Vending Machine)
-                            </p>
-                            <ul class="list-disc list-inside text-slate-600 text-sm space-y-1">
-                                <li>รณรงค์การคัดแยกขยะ</li>
-                                <li>ได้เงินจากการขายขวดที่ไม่ใช้แล้ว</li>
-                                <li>ลดปริมาณขยะก่อนนำไปกำจัด</li>
+                        <div class="bg-red-50/80 rounded-2xl p-6 border border-red-200 shadow-sm relative overflow-hidden">
+                             <div class="absolute top-0 right-0 -mt-4 -mr-4 text-red-200/50 text-9xl"><i class="ph ph-thumbs-down-fill"></i></div>
+                            <h4 class="text-red-800 font-extrabold text-xl mb-6 flex items-center gap-3 relative z-10">
+                                <span class="bg-red-200 p-2 rounded-lg"><i class="ph ph-minus-circle text-red-600"></i></span>
+                                ผลกระทบทางลบ (ข้อเสีย)
+                            </h4>
+                            <ul class="space-y-4 relative z-10">
+                                <li v-for="con in activeImpact.cons" class="flex items-start gap-3 text-slate-700 bg-white/60 p-3 rounded-xl">
+                                    <i class="ph ph-x-circle-fill text-red-500 text-xl mt-0.5 flex-shrink-0"></i>
+                                    <span class="font-medium">{{ con }}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
+
+                    <div class="px-10 pb-10">
+                        <div class="bg-slate-50 p-6 rounded-2xl border-l-4 border-indigo-500 flex gap-4 items-start shadow-inner">
+                            <i class="ph ph-scales text-3xl text-indigo-500 flex-shrink-0 mt-1"></i>
+                            <div>
+                                <p class="text-slate-500 text-sm font-bold uppercase tracking-wider mb-1">สรุปแนวทางการตัดสินใจ</p>
+                                <p class="font-bold text-xl text-indigo-900 leading-relaxed">"{{ activeImpact.summary }}"</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </transition>
+        </div>
+        </transition>
+
+        <transition name="fade">
+        <div v-if="currentView === 'quiz'" class="max-w-2xl mx-auto pb-12">
+            <button @click="currentView = 'menu'" class="mb-4 text-slate-500 hover:text-indigo-600 flex items-center gap-1 font-medium transition"><i class="ph ph-arrow-left"></i> กลับเมนูหลัก</button>
+
+            <div v-if="!quizFinished" class="glass-card rounded-3xl shadow-xl p-8 border-t-4 border-indigo-500">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-indigo-800 flex items-center gap-2">
+                        <i class="ph ph-pencil-circle text-3xl"></i> แบบทดสอบ
+                    </h2>
+                    <span class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-extrabold tracking-wide shadow-sm">ข้อที่ {{ currentQuestion + 1 }} / {{ questions.length }}</span>
+                </div>
+
+                <div class="mb-8">
+                    <p class="text-xl font-semibold text-slate-800 mb-8 leading-relaxed">{{ questions[currentQuestion].text }}</p>
+                    <div class="space-y-4">
+                        <button v-for="(choice, idx) in questions[currentQuestion].choices" :key="idx"
+                                @click="selectAnswer(idx)"
+                                class="w-full text-left p-5 rounded-2xl border-2 transition-all hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md flex items-center gap-4 group"
+                                :class="selectedAnswer === idx ? 'bg-indigo-50 border-indigo-500 ring-2 ring-indigo-200 shadow-md' : 'border-slate-200 bg-white'">
+                            <div class="w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold transition-colors"
+                                 :class="selectedAnswer === idx ? 'border-indigo-500 text-indigo-600 bg-white' : 'border-slate-300 text-slate-400 group-hover:border-indigo-400'">
+                                {{ ['A', 'B', 'C', 'D'][idx] }}
+                            </div>
+                            <span class="font-medium text-lg">{{ choice }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4 border-t border-slate-100">
+                    <button @click="nextQuestion" :disabled="selectedAnswer === null"
+                            class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center gap-2 text-lg">
+                        {{ currentQuestion === questions.length - 1 ? 'ส่งคำตอบ' : 'ข้อถัดไป' }} <i class="ph ph-arrow-right-bold"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div v-else class="glass-card rounded-3xl shadow-2xl p-12 text-center border-t-4" :class="score >= 8 ? 'border-green-500' : (score >= 5 ? 'border-yellow-500' : 'border-red-500')">
+                <div class="w-32 h-32 rounded-full flex items-center justify-center text-7xl mx-auto mb-6 shadow-lg animate__animated animate__bounceIn"
+                     :class="score >= 8 ? 'bg-green-100 text-green-500' : (score >= 5 ? 'bg-yellow-100 text-yellow-500' : 'bg-red-100 text-red-500')">
+                    <i class="ph" :class="score >= 8 ? 'ph-trophy-fill' : (score >= 5 ? 'ph-star-fill' : 'ph-smiley-sad-fill')"></i>
+                </div>
+                <h2 class="text-4xl font-extrabold text-slate-800 mb-2">สรุปคะแนนของคุณ</h2>
+                <div class="inline-block px-12 py-8 bg-slate-50 rounded-3xl shadow-inner mb-8 border">
+                    <div class="text-7xl font-black mb-2" :class="score >= 8 ? 'text-green-600' : (score >= 5 ? 'text-yellow-600' : 'text-red-600')">{{ score }} / {{ questions.length }}</div>
+                    <div class="text-slate-400 font-medium uppercase tracking-wider">คะแนนรวม</div>
+                </div>
+                <p class="text-xl font-bold mb-10" :class="score >= 8 ? 'text-green-700' : (score >= 5 ? 'text-yellow-700' : 'text-red-700')">"{{ getFeedback(score) }}"</p>
+                <button @click="restartQuiz" class="bg-slate-800 text-white px-10 py-4 rounded-2xl font-bold hover:bg-slate-700 transition shadow-lg hover:shadow-xl flex items-center gap-3 mx-auto text-lg">
+                    <i class="ph ph-arrow-counter-clockwise-bold"></i> ทำแบบทดสอบอีกครั้ง
+                </button>
             </div>
         </div>
         </transition>
 
     </main>
 
-    <footer class="text-center p-8 bg-white border-t border-slate-200 mt-auto">
-        <p class="text-slate-500 font-medium">© 2024 วิทยาการคำนวณ ม.4 (ตามหลักสูตร สสวท.)</p>
-        <p class="text-slate-400 text-sm mt-1">พัฒนาเพื่อการศึกษา</p>
+    <footer class="text-center p-6 text-slate-500 text-sm relative z-10">
+        <p>© 2024 Computer Science Learning Platform (M.4)</p>
     </footer>
 
 </div>
@@ -350,129 +321,131 @@
     createApp({
         setup() {
             const currentView = ref('menu');
-            const navItems = [
-                { label: 'สาเหตุ', view: 'factors' },
-                { label: 'Disruptive', view: 'disruptive' },
-                { label: 'การแพทย์', view: 'medical' },
-                { label: 'สิ่งแวดล้อม', view: 'environment' }
-            ];
-
-            // ฟังก์ชันจัดการเมื่อรูปภาพโหลดไม่ขึ้น (ป้องกันรูปแตก)
-            const handleImgError = (e) => {
-                // ถ้าโหลดรูปจริงไม่ได้ ให้ใช้รูปสีพื้นๆ พร้อมข้อความว่า "Image"
-                if (!e.target.src.includes('placehold.co')) {
-                    e.target.src = 'https://placehold.co/800x400/e2e8f0/64748b?text=Image+Unavailable';
-                }
+            
+            // --- Fallback Image Handler ---
+            const handleImageError = (e) => {
+                // ถ้าโหลดรูปไม่ได้ ให้เปลี่ยนไปใช้รูปสีพื้นๆ แทน
+                e.target.src = 'https://placehold.co/800x600/e2e8f0/475569?text=Image+Unavailable';
             };
 
-            // --- DATA 1: FACTORS (ตรงตามหน้า 3-9) ---
+            // --- DATA ---
             const factors = [
                 {
                     title: 'ความต้องการของมนุษย์',
-                    icon: 'ph-users',
-                    // Image: Smartphone usage
-                    image: 'https://images.unsplash.com/photo-1512314889357-e157c22f938d?q=80&w=800&auto=format&fit=crop',
-                    description: 'เมื่อมนุษย์มีความต้องการที่เปลี่ยนไป ส่งผลให้เกิดการเปลี่ยนแปลงของเทคโนโลยี เนื่องจากหากเทคโนโลยีชนิดใดยังไม่สามารถแก้ไขปัญหาหรือสนองความต้องการให้มนุษย์ได้ ก็จะต้องมีการปรับปรุงและพัฒนาเทคโนโลยีต่อไป',
-                    exampleTitle: 'การติดต่อสื่อสาร',
-                    exampleDetail: 'พัฒนาจากการเขียนจดหมาย -> โทรเลข -> โทรศัพท์ -> สมาร์ทโฟน เพื่อความรวดเร็วและสะดวกสบาย'
+                    category: 'Human Needs',
+                    icon: 'ph-users-three',
+                    image: 'https://images.unsplash.com/photo-1556155092-490a1ba16284?q=80&w=800&auto=format&fit=crop', // Woman with phone
+                    description: 'มนุษย์มีความต้องการพื้นฐาน (ปัจจัย 4) และความต้องการสิ่งอำนวยความสะดวก เพื่อให้ชีวิตง่ายขึ้น ปลอดภัยขึ้น และรวดเร็วขึ้น ความต้องการเหล่านี้ผลักดันให้เกิดการคิดค้นสิ่งประดิษฐ์ใหม่ๆ',
+                    example: 'มนุษย์ต้องการติดต่อสื่อสารให้เร็วขึ้น จึงพัฒนาจากการเขียนจดหมาย -> โทรเลข -> โทรศัพท์ -> สมาร์ทโฟน',
+                    textColor: 'text-blue-600', borderColor: 'border-blue-400'
                 },
                 {
                     title: 'ความก้าวหน้าของศาสตร์',
+                    category: 'Scientific Advancement',
                     icon: 'ph-atom',
-                    // Image: Textile/Fabric closeup
-                    image: 'https://images.unsplash.com/photo-1617791160505-6f00504e3519?q=80&w=800&auto=format&fit=crop',
-                    description: 'องค์ความรู้และความก้าวหน้าของศาสตร์ต่าง ๆ โดยเฉพาะวิทยาศาสตร์และคณิตศาสตร์ เป็นพื้นฐานสำคัญในการสร้างเทคโนโลยีใหม่',
-                    exampleTitle: 'เสื้อผ้านาโน (Nano Clothing)',
-                    exampleDetail: 'การนำองค์ความรู้ด้านนาโนเทคโนโลยี มาผลิตเส้นใยนาโนเพื่อทอเป็นผ้า มีคุณสมบัติพิเศษ: ป้องกันการเปียกชื้น, ลดรอยยับ, ยับยั้งแบคทีเรีย, และช่วยลดการเกิดกลิ่น'
+                    image: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=800&auto=format&fit=crop', // Lab
+                    description: 'การค้นพบความรู้ใหม่ทางวิทยาศาสตร์ กฎเกณฑ์ทางธรรมชาติ และคณิตศาสตร์ เป็นพื้นฐานสำคัญที่นำไปสู่การสร้างเทคโนโลยีที่ไม่เคยมีมาก่อน',
+                    example: 'การค้นพบไฟฟ้าและคลื่นแม่เหล็กไฟฟ้า นำไปสู่การสร้างวิทยุ โทรทัศน์ และคอมพิวเตอร์',
+                    textColor: 'text-purple-600', borderColor: 'border-purple-400'
                 },
                 {
                     title: 'สภาพเศรษฐกิจ',
+                    category: 'Economy',
                     icon: 'ph-currency-dollar',
-                    // Image: Mobile Payment
-                    image: 'https://images.unsplash.com/photo-1556742031-c6961e8560b0?q=80&w=800&auto=format&fit=crop',
-                    description: 'เมื่อเศรษฐกิจขยายตัว เทคโนโลยีต้องเปลี่ยนเพื่อส่งเสริมการทำงาน เช่น การลดต้นทุน หรือเพิ่มความรวดเร็วในการบริการ',
-                    exampleTitle: 'e-Payment (การเงินดิจิทัล)',
-                    exampleDetail: 'บริการทางการเงินแบบไม่ใช้เงินสด ช่วยให้ผู้บริโภคเข้าถึงบริการรวดเร็ว ลดค่าใช้จ่ายในการทำธุรกรรม และไม่ต้องเดินทางไปธนาคาร'
+                    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop', // Factory
+                    description: 'การแข่งขันทางธุรกิจ การลดต้นทุนการผลิต และการเพิ่มผลกำไร เป็นแรงจูงใจให้องค์กรต่างๆ ลงทุนวิจัยเทคโนโลยีเพื่อสร้างความได้เปรียบทางการค้า',
+                    example: 'โรงงานอุตสาหกรรมนำ "แขนกลหุ่นยนต์" มาใช้แทนแรงงานคน เพื่อผลิตสินค้าได้เร็วขึ้น ถูกลง และได้มาตรฐาน',
+                    textColor: 'text-green-600', borderColor: 'border-green-400'
                 },
                 {
-                    title: 'สังคมและวัฒนธรรม',
-                    icon: 'ph-globe',
-                    // Image: Reading on tablet
-                    image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=800&auto=format&fit=crop',
-                    description: 'บริบททางสังคมและวัฒนธรรมมีอิทธิพลต่อรูปแบบการนำเสนอเทคโนโลยี เพื่อให้สอดคล้องกับวิถีชีวิต',
-                    exampleTitle: 'บทสวดมนต์ / คัมภีร์ศาสนา',
-                    exampleDetail: 'เปลี่ยนรูปแบบจาก "หนังสือ" เป็น "เอกสารอิเล็กทรอนิกส์หรือแอปพลิเคชัน" เพื่อความสะดวกในการใช้งานได้ทุกที่ทุกเวลา'
+                    title: 'สภาพสังคมและวัฒนธรรม',
+                    category: 'Society & Culture',
+                    icon: 'ph-globe-hemisphere-west',
+                    image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=800&auto=format&fit=crop', // People using tech
+                    description: 'โครงสร้างประชากร (เช่น สังคมผู้สูงอายุ) ค่านิยม และวัฒนธรรม มีผลต่อทิศทางการพัฒนาเทคโนโลยีเพื่อให้สอดคล้องกับวิถีชีวิต',
+                    example: 'ประเทศที่มีผู้สูงอายุจำนวนมาก พัฒนา "หุ่นยนต์ดูแลผู้สูงอายุ" หรือ "Smart Home" เพื่อความปลอดภัย',
+                    textColor: 'text-pink-600', borderColor: 'border-pink-400'
                 },
                 {
                     title: 'สิ่งแวดล้อม',
+                    category: 'Environment',
                     icon: 'ph-plant',
-                    // Image: Electric Car Charging
-                    image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=800&auto=format&fit=crop',
-                    description: 'ปัญหาสิ่งแวดล้อม เช่น มลพิษ ทรัพยากรลดลง บีบบังคับให้มนุษย์ต้องคิดค้นเทคโนโลยีใหม่เพื่อแก้ปัญหา',
-                    exampleTitle: 'เชื้อเพลิงและยานยนต์',
-                    exampleDetail: 'เปลี่ยนจากน้ำมันเบนซิน -> น้ำมันแก๊สโซฮอล์ -> รถยนต์ไฟฟ้า (EV) เพื่อลดมลพิษทางอากาศ'
+                    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=800&auto=format&fit=crop', // Nature/Solar
+                    description: 'ปัญหาทรัพยากรธรรมชาติที่ลดลง ภาวะโลกร้อน และมลพิษ บีบบังคับให้มนุษย์ต้องสร้างเทคโนโลยีที่สะอาดและยั่งยืน (Green Technology)',
+                    example: 'การพัฒนารถยนต์ไฟฟ้า (EV) เพื่อลดการใช้น้ำมันและการปล่อยก๊าซคาร์บอนไดออกไซด์',
+                    textColor: 'text-emerald-600', borderColor: 'border-emerald-400'
                 }
             ];
             const activeFactor = ref(factors[0]);
 
-            // --- DATA 2: Disruptive Tech (ตรงตามหน้า 10) ---
-            const disruptItems = [
-                { name: 'อินเทอร์เน็ตไร้สาย', desc: 'Wireless Internet', image: 'https://images.unsplash.com/photo-1622630997542-42a1d63d45e8?q=80&w=400&auto=format&fit=crop' },
-                { name: 'วัสดุนาโน', desc: 'Nano Material', image: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=400&auto=format&fit=crop' },
-                { name: 'เทคโนโลยีหุ่นยนต์', desc: 'Robotics', image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=400&auto=format&fit=crop' },
-                { name: 'ยานพาหนะไร้คนขับ', desc: 'Driverless Car', image: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?q=80&w=400&auto=format&fit=crop' }
-            ];
-
-            // --- DATA 3: MEDICAL (ตรงตามหน้า 11-13) ---
-            const medicalCases = [
+            const impactTechs = [
                 {
-                    id: 1, title: 'การเย็บบาดแผล', icon: 'ph-bandaids',
-                    concept: 'ลดการติดเชื้อ สะดวก รวดเร็ว',
-                    reason: 'เพื่อลดโอกาสที่จะเกิดการติดเชื้อที่แผล ซึ่งอาจเป็นสาเหตุทำให้ผู้ป่วยเสียชีวิต',
-                    sciences: ['วัสดุศาสตร์ (สมบัติการฆ่าเชื้อ, ยืดหยุ่น)', 'เคมี (กาวโปรตีน)'],
-                    // Image: Wound closing technology / Science
-                    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop',
-                    steps: [
-                        { era: 'อดีต', name: 'ไหมเย็บแผล', desc: 'ใช้วัสดุธรรมชาติหรือสังเคราะห์พื้นฐาน' },
-                        { era: 'พัฒนา', name: 'ลวดเย็บแผล / เทปสเตอไรน์', desc: 'เพิ่มความรวดเร็วในการปิดแผล' },
-                        { era: 'ปัจจุบัน', name: 'กาวจากโปรตีน', desc: 'ใช้แสงกระตุ้น (Activated with light) เพื่อปิดปากแผล ลดการติดเชื้อและระคายเคือง' }
-                    ]
+                    id: 1, name: 'รถยนต์ไฟฟ้า (EV)', icon: 'ph-car-battery', 
+                    image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=800&auto=format&fit=crop', // EV
+                    desc: 'ยานพาหนะขับเคลื่อนด้วยพลังงานไฟฟ้า',
+                    pros: ['ลดมลพิษทางอากาศ (ไม่มีไอเสีย)', 'ประหยัดค่าใช้จ่ายด้านพลังงาน', 'เสียงเงียบ ลดมลพิษทางเสียง'],
+                    cons: ['แบตเตอรี่เก่าเป็นขยะอันตราย กำจัดยาก', 'การผลิตไฟฟ้าต้นทางอาจยังก่อมลพิษ', 'ใช้เวลาชาร์จนานกว่าเติมน้ำมัน'],
+                    summary: 'ควรส่งเสริมเพื่อสิ่งแวดล้อม แต่ต้องมีมาตรการกำจัดแบตเตอรี่ที่เหมาะสม'
                 },
                 {
-                    id: 2, title: 'เครื่องวัดความดัน', icon: 'ph-heartbeat',
-                    concept: 'วัดได้ด้วยตนเอง เชื่อมต่อมือถือ',
-                    reason: 'สมัยก่อนต้องมีผู้เชี่ยวชาญวัดให้ ต้องการความสะดวกในการตรวจสอบสุขภาพด้วยตนเอง',
-                    sciences: ['เทคโนโลยีดิจิทัล', 'ระบบเซนเซอร์', 'การพัฒนาแอปพลิเคชัน'],
-                    // Image: Digital blood pressure
-                    image: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?q=80&w=800&auto=format&fit=crop',
-                    steps: [
-                        { era: 'อดีต', name: 'แบบบีบมือ', desc: 'ต้องใช้ผู้เชี่ยวชาญในการฟังเสียงและอ่านค่า' },
-                        { era: 'พัฒนา', name: 'เครื่องวัดดิจิทัล', desc: 'ตรวจได้ด้วยตนเอง อ่านค่าตัวเลขได้ชัดเจน มีขนาดเล็ก' },
-                        { era: 'ปัจจุบัน', name: 'เชื่อมต่อ Smartphone', desc: 'อ่านค่าผ่านแอปพลิเคชัน พกพาสะดวก บันทึกประวัติได้' }
-                    ]
+                    id: 2, name: 'ปัญญาประดิษฐ์ (AI)', icon: 'ph-brain', 
+                    image: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=800&auto=format&fit=crop', // AI
+                    desc: 'ระบบคอมพิวเตอร์ที่คิดและเรียนรู้ได้เหมือนมนุษย์',
+                    pros: ['ทำงานได้ถูกต้อง แม่นยำ และรวดเร็ว', 'ช่วยวิเคราะห์ข้อมูลขนาดใหญ่ได้ดี', 'อำนวยความสะดวกในชีวิตประจำวัน'],
+                    cons: ['อาจแย่งงานมนุษย์ในบางอาชีพ', 'ละเมิดความเป็นส่วนตัว (Privacy)', 'ขาดความคิดสร้างสรรค์และจริยธรรม'],
+                    summary: 'ใช้เป็นเครื่องมือช่วยทำงาน (Co-pilot) ไม่ใช่แทนที่มนุษย์ทั้งหมด'
                 },
                 {
-                    id: 3, title: 'หูฟังแพทย์', icon: 'ph-stethoscope',
-                    concept: 'เล็ก เบา ขยายเสียงได้',
-                    reason: 'อดีตทำจากไม้ ขนาดใหญ่ น้ำหนักมาก พกพาไม่สะดวก',
-                    sciences: ['วัสดุศาสตร์', 'วิทยาศาสตร์เรื่องเสียง', 'อิเล็กทรอนิกส์'],
-                    // Image: Stethoscope
-                    image: 'https://images.unsplash.com/photo-1584982751601-97dcc096657c?q=80&w=800&auto=format&fit=crop',
-                    steps: [
-                        { era: 'อดีต', name: 'หูฟังไม้', desc: 'ขนาดใหญ่ น้ำหนักมาก พกพายาก' },
-                        { era: 'พัฒนา', name: 'หูฟังโลหะ/ยาง', desc: 'ขนาดเล็กลง น้ำหนักเบา' },
-                        { era: 'ปัจจุบัน', name: 'หูฟังอิเล็กทรอนิกส์', desc: 'เชื่อมต่อคอมพิวเตอร์ผ่าน Bluetooth ช่วยขยายเสียงวินิจฉัยโรคได้แม่นยำ' }
-                    ]
+                    id: 3, name: 'พลาสติก', icon: 'ph-recycle', 
+                    image: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=800&auto=format&fit=crop', // Plastic
+                    desc: 'วัสดุสังเคราะห์ที่ใช้กันแพร่หลาย',
+                    pros: ['น้ำหนักเบา แข็งแรง ทนทาน', 'ราคาถูก ผลิตได้ง่าย', 'ขึ้นรูปได้หลากหลายรูปทรง'],
+                    cons: ['ย่อยสลายยาก ใช้เวลาหลายร้อยปี', 'เป็นขยะมลพิษทางทะเลและดิน', 'การเผาทำลายปล่อยก๊าซพิษ'],
+                    summary: 'ลดการใช้ (Reduce) และนำกลับมาใช้ใหม่ (Recycle) ให้มากที่สุด'
+                },
+                {
+                    id: 4, name: 'โซเชียลมีเดีย', icon: 'ph-share-network', 
+                    image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop', // Social
+                    desc: 'สื่อสังคมออนไลน์เชื่อมโยงผู้คน',
+                    pros: ['ติดต่อสื่อสารได้ทั่วโลกทันที', 'เป็นช่องทางสร้างรายได้/ธุรกิจ', 'เข้าถึงข้อมูลข่าวสารได้ไว'],
+                    cons: ['Fake News แพร่กระจายง่าย', 'การกลั่นแกล้งทางออนไลน์ (Cyberbullying)', 'เสพติดหน้าจอ เสียสุขภาพจิต'],
+                    summary: 'ใช้เพื่อการสื่อสารอย่างมีสติ และตรวจสอบข้อมูลก่อนเชื่อ'
                 }
             ];
-            const activeMedical = ref(medicalCases[0]);
+            const activeImpact = ref(impactTechs[0]);
+
+            const questions = [
+                { text: 'ข้อใด "ไม่ใช่" สาเหตุหลักของการเปลี่ยนแปลงทางเทคโนโลยี?', choices: ['ความต้องการของมนุษย์', 'ความก้าวหน้าของศาสตร์', 'ความเบื่อหน่ายของนักประดิษฐ์', 'สภาพเศรษฐกิจและสังคม'], correct: 2 },
+                { text: 'การพัฒนารถยนต์ไฟฟ้า (EV) เกิดจากปัจจัยใดเป็นหลัก?', choices: ['ความต้องการความเร็ว', 'ปัญหาสิ่งแวดล้อมและพลังงาน', 'ต้องการความหรูหรา', 'ความเชื่อทางศาสนา'], correct: 1 },
+                { text: 'ข้อใดคือผลกระทบทาง "ลบ" ของการใช้ถุงพลาสติก?', choices: ['ราคาถูก หาซื้อง่าย', 'มีความเหนียว ทนทาน', 'ย่อยสลายยาก เป็นมลพิษ', 'กันน้ำได้ดี'], correct: 2 },
+                { text: '"สังคมผู้สูงอายุ" เป็นปัจจัยด้านใดที่กระตุ้นให้เกิดเทคโนโลยีหุ่นยนต์ดูแลคนชรา?', choices: ['ด้านเศรษฐกิจ', 'ด้านการเมือง', 'ด้านสิ่งแวดล้อม', 'ด้านสังคมและวัฒนธรรม'], correct: 3 },
+                { text: 'การวิเคราะห์ผลกระทบของเทคโนโลยีควรทำอย่างไร?', choices: ['ดูเฉพาะข้อดี', 'ดูเฉพาะข้อเสีย', 'พิจารณาทั้งข้อดีและข้อเสียแล้วเปรียบเทียบ', 'เลือกตามความนิยมใน TikTok'], correct: 2 },
+                { text: 'ความก้าวหน้าของ "ศาสตร์" ใด ที่เป็นพื้นฐานของอุปกรณ์อิเล็กทรอนิกส์?', choices: ['ชีววิทยา', 'วิทยาศาสตร์และคณิตศาสตร์', 'ประวัติศาสตร์', 'ภูมิศาสตร์'], correct: 1 },
+                { text: 'การนำหุ่นยนต์มาใช้ในโรงงานอุตสาหกรรม เป็นอิทธิพลจากปัจจัยใด?', choices: ['สภาพเศรษฐกิจ (ลดต้นทุน)', 'สภาพอากาศ', 'ความเชื่อ', 'กฎหมาย'], correct: 0 },
+                { text: 'ข้อใดคือผลกระทบด้านบวกของ AI?', choices: ['แย่งงานมนุษย์', 'ทำงานได้รวดเร็วและแม่นยำ', 'ละเมิดข้อมูลส่วนตัว', 'ไม่มีความรู้สึก'], correct: 1 },
+                { text: 'ทำไมมนุษย์ถึงพัฒนาเทคโนโลยีการสื่อสารจากจดหมายมาเป็นสมาร์ทโฟน?', choices: ['ต้องการความล่าช้า', 'ต้องการความสะดวกและรวดเร็ว', 'กระดาษแพง', 'ไม่มีตู้ไปรษณีย์'], correct: 1 },
+                { text: 'ข้อใดเป็นการตัดสินใจเลือกใช้เทคโนโลยีที่เหมาะสมที่สุด?', choices: ['เลือกที่แพงที่สุด', 'เลือกตามเพื่อน', 'เลือกที่ส่งผลกระทบด้านลบน้อยที่สุดและคุ้มค่า', 'เลือกที่ทันสมัยที่สุดโดยไม่สนผลเสีย'], correct: 2 },
+            ];
+            const currentQuestion = ref(0);
+            const selectedAnswer = ref(null);
+            const score = ref(0);
+            const quizFinished = ref(false);
+
+            const selectAnswer = (idx) => { selectedAnswer.value = idx; };
+            const nextQuestion = () => {
+                if (selectedAnswer.value === questions[currentQuestion.value].correct) score.value++;
+                if (currentQuestion.value < questions.length - 1) { currentQuestion.value++; selectedAnswer.value = null; } 
+                else { quizFinished.value = true; }
+            };
+            const restartQuiz = () => { currentQuestion.value = 0; selectedAnswer.value = null; score.value = 0; quizFinished.value = false; };
+            const getFeedback = (s) => s >= 8 ? 'ยอดเยี่ยม! คุณเข้าใจบทเรียนเป็นอย่างดี' : (s >= 5 ? 'ทำได้ดี! ทบทวนอีกนิดหน่อยจะแม่นยำขึ้น' : 'พยายามอีกนิด! ลองกลับไปอ่านเนื้อหาใหม่นะ');
 
             return {
-                currentView, navItems,
+                currentView, handleImageError,
                 factors, activeFactor,
-                disruptItems,
-                medicalCases, activeMedical,
-                handleImgError
+                impactTechs, activeImpact,
+                questions, currentQuestion, selectedAnswer, score, quizFinished,
+                selectAnswer, nextQuestion, restartQuiz, getFeedback
             };
         }
     }).mount('#app');
