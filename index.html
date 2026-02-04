@@ -22,14 +22,19 @@
         .slide-up-enter-active { transition: all 0.5s ease-out; }
         .slide-up-enter-from { opacity: 0; transform: translateY(20px); }
         
-        .timeline-line {
+        /* Timeline styling */
+        .timeline-step::before {
+            content: '';
             position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
+            left: 27px;
+            top: 2rem;
+            bottom: -2rem;
             width: 2px;
-            background-color: #cbd5e1;
-            transform: translateX(-50%);
+            background-color: #e2e8f0;
+            z-index: 0;
+        }
+        .timeline-step:last-child::before {
+            display: none;
         }
     </style>
 </head>
@@ -48,10 +53,10 @@
                     <span class="text-xs text-slate-500">บทที่ 2: สสวท. ม.4</span>
                 </div>
             </div>
-            <div class="hidden md:flex gap-1">
+            <div class="hidden md:flex gap-1 overflow-x-auto">
                 <button v-for="item in navItems" :key="item.view"
                         @click="currentView = item.view"
-                        class="px-4 py-2 rounded-full text-sm font-medium transition"
+                        class="px-4 py-2 rounded-full text-sm font-medium transition whitespace-nowrap"
                         :class="currentView === item.view ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:text-indigo-600'">
                     {{ item.label }}
                 </button>
@@ -64,35 +69,36 @@
         <transition name="fade">
         <div v-if="currentView === 'menu'" class="flex flex-col items-center pt-8 pb-12">
             <div class="text-center mb-10 animate__animated animate__fadeInDown">
-                <h1 class="text-4xl md:text-6xl font-black text-indigo-900 mb-4 tracking-tight">การเปลี่ยนแปลง<br><span class="text-indigo-600">ของเทคโนโลยี</span></h1>
-                <p class="text-xl text-slate-600 max-w-2xl mx-auto font-light">
-                    วิเคราะห์สาเหตุ ปัจจัย และผลกระทบ ตามหลักสูตร สสวท.
+                <h1 class="text-3xl md:text-5xl font-black text-indigo-900 mb-4 tracking-tight">การเปลี่ยนแปลง<br><span class="text-indigo-600">ของเทคโนโลยี</span></h1>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto font-light leading-relaxed">
+                    "เทคโนโลยีเปลี่ยนแปลงตลอดเวลาขึ้นกับสาเหตุหรือปัจจัยหลายอย่าง เพื่ออำนวยความสะดวกและแก้ปัญหาของมนุษย์"
                 </p>
+                <span class="text-xs text-slate-400 mt-2 block">- สรุปท้ายบท สสวท. -</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full animate__animated animate__fadeInUp animate__delay-1s">
                 <div @click="currentView = 'factors'" class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition cursor-pointer border-t-4 border-blue-500 group">
                     <i class="ph ph-tree-structure text-4xl text-blue-500 mb-4 group-hover:scale-110 transition block"></i>
                     <h3 class="text-lg font-bold">1. สาเหตุและปัจจัย</h3>
-                    <p class="text-slate-500 text-sm mt-2">5 ปัจจัยหลัก: มนุษย์, ศาสตร์, เศรษฐกิจ, สังคม, สิ่งแวดล้อม</p>
+                    <p class="text-slate-500 text-sm mt-2">5 ปัจจัย: มนุษย์, ศาสตร์, เศรษฐกิจ, สังคม, สิ่งแวดล้อม</p>
                 </div>
                 
                 <div @click="currentView = 'medical'" class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition cursor-pointer border-t-4 border-red-500 group">
                     <i class="ph ph-heartbeat text-4xl text-red-500 mb-4 group-hover:scale-110 transition block"></i>
                     <h3 class="text-lg font-bold">2. วิวัฒนาการทางการแพทย์</h3>
-                    <p class="text-slate-500 text-sm mt-2">กรณีศึกษา: หูฟังแพทย์, วัดความดัน, การเย็บแผล</p>
+                    <p class="text-slate-500 text-sm mt-2">กรณีศึกษา: หูฟัง, วัดความดัน, เย็บแผล</p>
                 </div>
 
                 <div @click="currentView = 'environment'" class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition cursor-pointer border-t-4 border-green-500 group">
                     <i class="ph ph-leaf text-4xl text-green-500 mb-4 group-hover:scale-110 transition block"></i>
                     <h3 class="text-lg font-bold">3. เทคโนโลยีสิ่งแวดล้อม</h3>
-                    <p class="text-slate-500 text-sm mt-2">กรณีศึกษา: บรรจุภัณฑ์ใบไม้, การจัดการขยะ</p>
+                    <p class="text-slate-500 text-sm mt-2">กรณีศึกษา: บรรจุภัณฑ์ใบไม้, ตู้รับคืนขวด</p>
                 </div>
 
                 <div @click="currentView = 'disruptive'" class="glass-card p-6 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition cursor-pointer border-t-4 border-purple-500 group">
                     <i class="ph ph-lightning text-4xl text-purple-500 mb-4 group-hover:scale-110 transition block"></i>
                     <h3 class="text-lg font-bold">4. Disruptive Tech</h3>
-                    <p class="text-slate-500 text-sm mt-2">เทคโนโลยีเปลี่ยนโลกที่เข้ามาแทนที่สิ่งเดิมอย่างรวดเร็ว</p>
+                    <p class="text-slate-500 text-sm mt-2">เทคโนโลยีเปลี่ยนโลกที่เข้ามาแทนที่สิ่งเดิม</p>
                 </div>
             </div>
         </div>
@@ -101,8 +107,8 @@
         <transition name="fade">
         <div v-if="currentView === 'factors'" class="pb-12">
             <div class="mb-8">
-                <h2 class="text-3xl font-bold text-indigo-900">สาเหตุการเปลี่ยนแปลง</h2>
-                <p class="text-slate-500">เทคโนโลยีเปลี่ยนแปลงตลอดเวลาจาก 5 ปัจจัยหลัก</p>
+                <h2 class="text-3xl font-bold text-indigo-900">1. สาเหตุและปัจจัยการเปลี่ยนแปลง</h2>
+                <p class="text-slate-500">วิเคราะห์สาเหตุหลัก 5 ประการ (อ้างอิงหน้า 3-9)</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -132,11 +138,14 @@
                             
                             <div class="bg-slate-50 rounded-xl p-6 border-l-4" :class="activeFactor.borderClass">
                                 <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
-                                    <i class="ph ph-lightbulb"></i> ตัวอย่างในบทเรียน:
+                                    <i class="ph ph-lightbulb"></i> ตัวอย่างการเปลี่ยนแปลง:
                                 </h4>
                                 <div class="flex flex-col md:flex-row gap-6 items-start">
-                                    <img :src="activeFactor.img" @error="handleImgError" class="w-full md:w-48 h-32 object-cover rounded-lg shadow-sm">
-                                    <p class="text-slate-600 flex-1">{{ activeFactor.example }}</p>
+                                    <img :src="activeFactor.img" @error="handleImgError" class="w-full md:w-48 h-32 object-cover rounded-lg shadow-sm border border-white">
+                                    <div>
+                                        <p class="text-slate-700 font-semibold text-lg">{{ activeFactor.exampleTitle }}</p>
+                                        <p class="text-slate-600 text-sm mt-1">{{ activeFactor.exampleDesc }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -148,11 +157,9 @@
 
         <transition name="fade">
         <div v-if="currentView === 'medical'" class="pb-12">
-            <div class="mb-8 flex justify-between items-end">
-                <div>
-                    <h2 class="text-3xl font-bold text-red-600">วิวัฒนาการทางการแพทย์</h2>
-                    <p class="text-slate-500">การเปลี่ยนแปลงเพื่อความสะดวก รวดเร็ว และปลอดภัย (หน้า 11-13)</p>
-                </div>
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-red-600">2. วิวัฒนาการทางการแพทย์</h2>
+                <p class="text-slate-500">กรณีศึกษาการเปลี่ยนแปลงเพื่อความสะดวก รวดเร็ว และปลอดภัย (อ้างอิงหน้า 11-13)</p>
             </div>
 
             <div class="flex gap-2 mb-8 overflow-x-auto pb-2">
@@ -167,14 +174,21 @@
                 <div :key="activeMedical.id" class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-6">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-800 mb-3">สาเหตุการเปลี่ยนแปลง</h3>
+                            <h3 class="text-xl font-bold text-slate-800 mb-3 flex items-center gap-2">
+                                <i class="ph ph-target text-red-500"></i> สาเหตุการเปลี่ยนแปลง
+                            </h3>
                             <p class="text-slate-600 leading-relaxed">{{ activeMedical.reason }}</p>
                         </div>
                         <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                            <h3 class="text-xl font-bold text-blue-800 mb-3">ศาสตร์ที่เกี่ยวข้อง</h3>
+                            <h3 class="text-xl font-bold text-blue-800 mb-3 flex items-center gap-2">
+                                <i class="ph ph-flask text-blue-600"></i> ศาสตร์ที่เกี่ยวข้อง
+                            </h3>
                             <ul class="list-disc list-inside text-blue-700 space-y-1">
                                 <li v-for="sci in activeMedical.sciences">{{ sci }}</li>
                             </ul>
+                        </div>
+                        <div class="h-48 rounded-2xl overflow-hidden shadow-md">
+                             <img :src="activeMedical.img" @error="handleImgError" class="w-full h-full object-cover">
                         </div>
                     </div>
 
@@ -182,13 +196,14 @@
                         <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
                             <i class="ph ph-clock-counter-clockwise"></i> ลำดับวิวัฒนาการ
                         </h3>
-                        <div class="space-y-6 relative pl-4">
-                            <div class="absolute left-[27px] top-2 bottom-4 w-0.5 bg-slate-200"></div>
-                            <div v-for="(step, idx) in activeMedical.steps" :key="idx" class="relative flex gap-4 items-start">
-                                <div class="w-6 h-6 rounded-full bg-red-500 border-4 border-white shadow-sm flex-shrink-0 z-10 mt-1"></div>
-                                <div class="bg-slate-50 p-4 rounded-xl flex-1 border border-slate-100">
-                                    <h4 class="font-bold text-slate-700">{{ step.era }}</h4>
-                                    <p class="text-slate-500 text-sm">{{ step.desc }}</p>
+                        <div class="space-y-0 relative pl-2">
+                            <div v-for="(step, idx) in activeMedical.steps" :key="idx" class="timeline-step relative flex gap-4 items-start pb-8">
+                                <div class="w-14 h-14 rounded-full bg-white border-4 border-red-100 shadow-sm flex-shrink-0 z-10 flex items-center justify-center font-bold text-xs text-red-500 uppercase tracking-tighter">
+                                    {{ step.era }}
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-xl flex-1 border border-slate-100 relative top-1">
+                                    <h4 class="font-bold text-slate-800 text-lg mb-1">{{ step.title }}</h4>
+                                    <p class="text-slate-600 text-sm">{{ step.desc }}</p>
                                 </div>
                             </div>
                         </div>
@@ -201,58 +216,68 @@
         <transition name="fade">
         <div v-if="currentView === 'environment'" class="pb-12">
             <div class="mb-8">
-                <h2 class="text-3xl font-bold text-green-700">เทคโนโลยีเพื่อสิ่งแวดล้อม</h2>
-                <p class="text-slate-500">การแก้ปัญหามลพิษและขยะด้วยเทคโนโลยี (หน้า 14-15)</p>
+                <h2 class="text-3xl font-bold text-green-700">3. เทคโนโลยีสิ่งแวดล้อม</h2>
+                <p class="text-slate-500">กรณีศึกษาการแก้ปัญหามลพิษและขยะ (อ้างอิงหน้า 14-15)</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 group hover:shadow-2xl transition duration-500">
-                    <div class="h-48 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1605600659908-0ef719419d42?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <h3 class="absolute bottom-4 left-6 text-white text-2xl font-bold">บรรจุภัณฑ์ (Packaging)</h3>
+                <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 group hover:shadow-2xl transition duration-500 flex flex-col">
+                    <div class="h-56 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1622340274296-6060c6792346?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <h3 class="absolute bottom-4 left-6 text-white text-2xl font-bold">1. บรรจุภัณฑ์ (Packaging)</h3>
                     </div>
-                    <div class="p-8">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="bg-red-100 text-red-600 px-4 py-2 rounded-lg font-bold flex-1 text-center">
-                                <i class="ph ph-x-circle block text-2xl mb-1"></i> โฟม
-                            </div>
-                            <i class="ph ph-arrow-right text-slate-300 text-2xl"></i>
-                            <div class="bg-green-100 text-green-600 px-4 py-2 rounded-lg font-bold flex-1 text-center">
-                                <i class="ph ph-leaf block text-2xl mb-1"></i> วัสดุธรรมชาติ
-                            </div>
+                    <div class="p-8 flex-grow">
+                        <div class="mb-4">
+                            <span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">ปัญหา:</span>
+                            <span class="text-slate-600 text-sm"> โฟมเป็นมลพิษ ย่อยสลายยาก</span>
                         </div>
-                        <p class="text-slate-600 mb-4">
-                            เปลี่ยนจากโฟมที่ย่อยสลายยาก มาเป็นผลิตภัณฑ์จากใบไม้สด เช่น <span class="font-bold text-green-700">ใบทองกวาว, ใบไทร, ใบสัก</span> 
+                        
+                        <div class="flex items-center gap-2 mb-6 w-full">
+                            <div class="bg-red-100 text-red-600 px-3 py-2 rounded-lg font-bold text-center text-sm flex-1">โฟม</div>
+                            <i class="ph ph-arrow-right text-slate-300"></i>
+                            <div class="bg-green-100 text-green-600 px-3 py-2 rounded-lg font-bold text-center text-sm flex-1">วัสดุธรรมชาติ</div>
+                        </div>
+                        
+                        <p class="text-slate-700 mb-4 font-medium">
+                            เปลี่ยนมาใช้ผลิตภัณฑ์จากใบไม้สด เช่น:
                         </p>
-                        <p class="text-sm text-slate-500 bg-slate-50 p-3 rounded-lg border">
-                            <i class="ph ph-info"></i> ย่อยสลายได้ตามธรรมชาติ ช่วยลดขยะและมลพิษ
+                        <ul class="grid grid-cols-3 gap-2 text-center text-xs font-bold text-green-800 mb-4">
+                            <li class="bg-green-50 p-2 rounded border border-green-200">ใบทองกวาว</li>
+                            <li class="bg-green-50 p-2 rounded border border-green-200">ใบไทร</li>
+                            <li class="bg-green-50 p-2 rounded border border-green-200">ใบสัก</li>
+                        </ul>
+                        <p class="text-sm text-slate-500">
+                            <i class="ph ph-check-circle text-green-500"></i> ย่อยสลายได้เองตามธรรมชาติ
                         </p>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 group hover:shadow-2xl transition duration-500">
-                    <div class="h-48 overflow-hidden relative">
+                <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-slate-100 group hover:shadow-2xl transition duration-500 flex flex-col">
+                    <div class="h-56 overflow-hidden relative">
                         <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <h3 class="absolute bottom-4 left-6 text-white text-2xl font-bold">การจัดการขยะ</h3>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <h3 class="absolute bottom-4 left-6 text-white text-2xl font-bold">2. การจัดการขยะ</h3>
                     </div>
-                    <div class="p-8">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="bg-orange-100 text-orange-600 px-4 py-2 rounded-lg font-bold flex-1 text-center text-sm">
-                                คัดแยกเอง<br>(ไม่มีประสิทธิภาพ)
-                            </div>
-                            <i class="ph ph-arrow-right text-slate-300 text-2xl"></i>
-                            <div class="bg-blue-100 text-blue-600 px-4 py-2 rounded-lg font-bold flex-1 text-center text-sm">
-                                ตู้รับคืนขวด<br>อัตโนมัติ
-                            </div>
+                    <div class="p-8 flex-grow">
+                        <div class="mb-4">
+                            <span class="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded">ปัญหา:</span>
+                            <span class="text-slate-600 text-sm"> ครัวเรือนไม่คัดแยกขยะ การกำจัดไม่มีประสิทธิภาพ</span>
                         </div>
-                        <p class="text-slate-600 mb-4">
-                            ภาคครัวเรือนมักไม่แยกขยะ จึงมีการสร้าง <span class="font-bold text-blue-700">ตู้รับซื้อขวดอัตโนมัติ (Reverse Vending Machine)</span>
+
+                        <div class="flex items-center gap-2 mb-6 w-full">
+                            <div class="bg-orange-100 text-orange-600 px-3 py-2 rounded-lg font-bold text-center text-sm flex-1">คัดแยกเอง</div>
+                            <i class="ph ph-arrow-right text-slate-300"></i>
+                            <div class="bg-blue-100 text-blue-600 px-3 py-2 rounded-lg font-bold text-center text-sm flex-1">ตู้อัตโนมัติ</div>
+                        </div>
+
+                        <p class="text-slate-700 mb-4 font-medium">
+                            การสร้าง <span class="text-blue-600 font-bold">ตู้รับซื้อขวดอัตโนมัติ</span> (Reverse Vending Machine)
                         </p>
-                        <p class="text-sm text-slate-500 bg-slate-50 p-3 rounded-lg border">
-                            <i class="ph ph-info"></i> รณรงค์การคัดแยกขยะ + สร้างรายได้จากการขายขวด
-                        </p>
+                        <ul class="text-sm text-slate-600 space-y-2">
+                            <li class="flex items-start gap-2"><i class="ph ph-check text-blue-500"></i> รณรงค์การคัดแยกขยะก่อนทิ้ง</li>
+                            <li class="flex items-start gap-2"><i class="ph ph-check text-blue-500"></i> สร้างรายได้จากการขายขวดที่ไม่ใช้แล้ว</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -263,24 +288,31 @@
         <div v-if="currentView === 'disruptive'" class="pb-12 flex flex-col items-center">
             <div class="max-w-3xl text-center mb-10">
                 <h2 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
-                    Disruptive Technology
+                    4. Disruptive Technology
                 </h2>
-                <p class="text-xl text-slate-600 font-light">เทคโนโลยีเปลี่ยนโลก</p>
+                <p class="text-xl text-slate-600 font-light">เทคโนโลยีเปลี่ยนโลก (อ้างอิงหน้า 10)</p>
             </div>
 
             <div class="bg-white rounded-3xl p-8 md:p-12 shadow-2xl max-w-4xl border border-purple-100 relative overflow-hidden">
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-purple-200 rounded-full blur-3xl opacity-30"></div>
+                <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-pink-200 rounded-full blur-3xl opacity-30"></div>
                 
-                <h3 class="text-2xl font-bold text-slate-800 mb-6 relative z-10">นิยาม (หน้า 10)</h3>
-                <p class="text-lg text-slate-600 leading-loose relative z-10 mb-8">
-                    "เทคโนโลยีที่เกิดขึ้นอย่างทันที และผ่านกระบวนการพัฒนาจนกลายเป็นเทคโนโลยีที่มีประโยชน์กับประชากรส่วนใหญ่ 
-                    <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold">ซึ่งเข้ามาแทนที่เทคโนโลยีในอดีต</span>"
-                </p>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-bold text-slate-800 mb-4 border-l-4 border-purple-500 pl-4">นิยาม</h3>
+                    <p class="text-lg text-slate-700 leading-relaxed mb-8 bg-purple-50 p-6 rounded-xl border border-purple-100">
+                        "เทคโนโลยีที่เกิดขึ้นอย่างทันที และผ่านกระบวนการพัฒนาจนกลายเป็นเทคโนโลยีที่มีประโยชน์กับประชากรส่วนใหญ่ 
+                        <span class="font-bold text-purple-700">ซึ่งเข้ามาแทนที่เทคโนโลยีในอดีต</span>"
+                    </p>
 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
-                    <div v-for="ex in disruptExamples" :key="ex.name" class="bg-slate-50 p-4 rounded-xl text-center border hover:border-purple-300 transition">
-                        <i :class="ex.icon" class="text-3xl text-purple-500 mb-2 block"></i>
-                        <span class="text-sm font-bold text-slate-700">{{ ex.name }}</span>
+                    <h3 class="text-xl font-bold text-slate-800 mb-6">ตัวอย่างในบทเรียน:</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <div v-for="ex in disruptExamples" :key="ex.name" class="bg-white p-6 rounded-2xl text-center border border-slate-200 shadow-sm hover:shadow-md hover:border-purple-300 transition hover:-translate-y-1">
+                            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+                                <i :class="ex.icon"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-700 block">{{ ex.name }}</span>
+                            <span class="text-xs text-slate-400 block mt-1">{{ ex.th }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,8 +321,8 @@
 
     </main>
 
-    <footer class="text-center p-6 text-slate-400 text-sm">
-        อ้างอิงเนื้อหา: หนังสือเรียนรายวิชาพื้นฐาน วิทยาศาสตร์และเทคโนโลยี (การออกแบบและเทคโนโลยี) ชั้นมัธยมศึกษาปีที่ 4 สสวท.
+    <footer class="text-center p-6 text-slate-400 text-sm bg-white border-t border-slate-100">
+        เนื้อหาอ้างอิงจาก: หนังสือเรียนรายวิชาพื้นฐานวิทยาศาสตร์และเทคโนโลยี (การออกแบบและเทคโนโลยี) ชั้นมัธยมศึกษาปีที่ 4 สสวท.
     </footer>
 
 </div>
@@ -312,7 +344,7 @@
                 e.target.src = 'https://placehold.co/600x400/e2e8f0/64748b?text=No+Image';
             };
 
-            // DATA 1: FACTORS (อิงตาม PDF หน้า 1-9)
+            // DATA 1: FACTORS (อิงตาม PDF หน้า 3-9)
             const factors = [
                 {
                     title: 'ความต้องการของมนุษย์',
@@ -320,16 +352,18 @@
                     icon: 'ph-users-three',
                     img: 'https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=600&auto=format&fit=crop',
                     desc: 'เพื่อแก้ปัญหาหรือสนองความต้องการ หากเทคโนโลยีเดิมไม่ตอบโจทย์ ก็ต้องพัฒนาใหม่',
-                    example: 'ต้องการสื่อสารรวดเร็ว: จดหมาย -> โทรศัพท์ -> สมาร์ทโฟน (หน้า 4)',
+                    exampleTitle: 'การติดต่อสื่อสาร',
+                    exampleDesc: 'เปลี่ยนจาก จดหมาย -> โทรศัพท์ -> สมาร์ทโฟน เพื่อความรวดเร็วและสะดวกสบาย',
                     badgeClass: 'bg-blue-100 text-blue-600', borderClass: 'border-blue-400'
                 },
                 {
                     title: 'ความก้าวหน้าของศาสตร์',
-                    category: 'Scientific Advancement',
+                    category: 'Science & Math',
                     icon: 'ph-atom',
-                    img: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?q=80&w=600&auto=format&fit=crop',
-                    desc: 'โดยเฉพาะวิทยาศาสตร์และคณิตศาสตร์ นำไปสู่การสร้างสิ่งใหม่',
-                    example: 'นาโนเทคโนโลยี: ผลิตเส้นใยนาโนทำเสื้อผ้า กันน้ำ ลดรอยยับ ยับยั้งแบคทีเรีย (หน้า 6)',
+                    img: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=600&auto=format&fit=crop', // Clothing texture
+                    desc: 'โดยเฉพาะวิทยาศาสตร์และคณิตศาสตร์ นำไปสู่การสร้างสิ่งใหม่ (หน้า 6)',
+                    exampleTitle: 'เสื้อผ้านาโน',
+                    exampleDesc: 'ใช้นาโนเทคโนโลยีผลิตเส้นใยนาโนทำเสื้อผ้า: ป้องกันการเปียกชื้น, ลดรอยยับ, ยับยั้งแบคทีเรีย, ลดกลิ่น',
                     badgeClass: 'bg-purple-100 text-purple-600', borderClass: 'border-purple-400'
                 },
                 {
@@ -337,17 +371,19 @@
                     category: 'Economy',
                     icon: 'ph-currency-dollar',
                     img: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=600&auto=format&fit=crop',
-                    desc: 'การขยายตัวทางเศรษฐกิจทำให้ต้องเปลี่ยนรูปแบบเทคโนโลยีเพื่อส่งเสริมการทำงาน',
-                    example: 'e-Payment: ชำระเงินผ่านดิจิทัล ลดค่าใช้จ่าย ไม่ต้องไปธนาคาร (หน้า 7)',
+                    desc: 'เศรษฐกิจขยายตัว เทคโนโลยีต้องเปลี่ยนเพื่อส่งเสริมการทำงาน (หน้า 7)',
+                    exampleTitle: 'E-Payment (การเงินดิจิทัล)',
+                    exampleDesc: 'ชำระเงินผ่านช่องทางดิจิทัล ลดค่าใช้จ่ายในการทำธุรกรรม ไม่ต้องเดินทางไปธนาคาร เข้าถึงบริการรวดเร็ว',
                     badgeClass: 'bg-green-100 text-green-600', borderClass: 'border-green-400'
                 },
                 {
                     title: 'สังคมและวัฒนธรรม',
                     category: 'Society',
                     icon: 'ph-users',
-                    img: 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?q=80&w=600&auto=format&fit=crop',
-                    desc: 'บริบทสังคมมีอิทธิพลต่อรูปแบบการนำเสนอเทคโนโลยี',
-                    example: 'ศาสนา: บทสวดมนต์เปลี่ยนจากหนังสือ เป็นแอปพลิเคชัน/เอกสารอิเล็กทรอนิกส์ (หน้า 8)',
+                    img: 'https://images.unsplash.com/photo-1519638831568-d9897f54ed69?q=80&w=600&auto=format&fit=crop',
+                    desc: 'บริบทสังคมมีอิทธิพลต่อรูปแบบการนำเสนอเทคโนโลยี (หน้า 8)',
+                    exampleTitle: 'บทสวดมนต์ / ศาสนา',
+                    exampleDesc: 'เปลี่ยนจาก "หนังสือ" เป็น "เอกสารอิเล็กทรอนิกส์/แอปพลิเคชัน" เพื่อความสะดวก ใช้งานได้ทุกที่ทุกเวลา',
                     badgeClass: 'bg-pink-100 text-pink-600', borderClass: 'border-pink-400'
                 },
                 {
@@ -355,8 +391,9 @@
                     category: 'Environment',
                     icon: 'ph-plant',
                     img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?q=80&w=600&auto=format&fit=crop',
-                    desc: 'ปัญหาสิ่งแวดล้อมบีบให้ต้องคิดค้นเทคโนโลยีใหม่เพื่อแก้ปัญหา',
-                    example: 'พลังงาน: น้ำมันเบนซิน -> แก๊สโซฮอล์ -> รถยนต์ไฟฟ้า (EV) (หน้า 9)',
+                    desc: 'ปัญหาสิ่งแวดล้อมบีบให้ต้องคิดค้นเทคโนโลยีใหม่เพื่อแก้ปัญหา (หน้า 9)',
+                    exampleTitle: 'พลังงานสะอาด',
+                    exampleDesc: 'เปลี่ยนจากน้ำมันเบนซิน -> น้ำมันแก๊สโซฮอล์ -> รถยนต์ไฟฟ้า (EV) เพื่อลดมลพิษ',
                     badgeClass: 'bg-emerald-100 text-emerald-600', borderClass: 'border-emerald-400'
                 }
             ];
@@ -365,33 +402,36 @@
             // DATA 2: MEDICAL CASE STUDIES (อิงตาม PDF หน้า 11-13)
             const medicalCases = [
                 {
-                    id: 1, title: 'หูฟังแพทย์',
-                    reason: 'เดิมใช้ไม้ มีขนาดใหญ่ น้ำหนักมาก พกพาไม่สะดวก',
-                    sciences: ['วัสดุศาสตร์ (น้ำหนักเบา)', 'วิทยาศาสตร์เสียง', 'อิเล็กทรอนิกส์ (Bluetooth)'],
+                    id: 1, title: 'การเย็บบาดแผล',
+                    reason: 'เพื่อลดโอกาสการติดเชื้อที่แผล ซึ่งอาจทำให้เสียชีวิต',
+                    img: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=600&auto=format&fit=crop',
+                    sciences: ['วัสดุศาสตร์ (สมบัติการฆ่าเชื้อ, ยืดหยุ่น, ไม่ระคายเคือง)', 'เคมี (กาวโปรตีน)'],
                     steps: [
-                        { era: 'อดีต', desc: 'ทำจากไม้' },
-                        { era: 'พัฒนา', desc: 'ขนาดเล็ก น้ำหนักเบา (วัสดุใหม่)' },
-                        { era: 'ปัจจุบัน', desc: 'หูฟังอิเล็กทรอนิกส์ เชื่อมต่อ Bluetooth' }
+                        { era: 'ระยะแรก', title: 'ไหมเย็บแผล', desc: 'ใช้วัสดุพื้นฐาน' },
+                        { era: 'พัฒนา', title: 'ลวดเย็บแผล / เทปสเตอไรน์', desc: 'เพิ่มความสะดวก' },
+                        { era: 'ปัจจุบัน', title: 'กาวจากโปรตีน', desc: 'ใช้แสงกระตุ้น (Activated with light) เพื่อปิดปากแผล ลดการติดเชื้อ' }
                     ]
                 },
                 {
-                    id: 2, title: 'วัดความดัน',
-                    reason: 'เดิมต้องให้ผู้เชี่ยวชาญวัดเท่านั้น ต้องการความสะดวกให้วัดเองได้ที่บ้าน',
-                    sciences: ['เทคโนโลยีดิจิทัล', 'เซนเซอร์', 'แอปพลิเคชัน'],
+                    id: 2, title: 'เครื่องวัดความดัน',
+                    reason: 'ต้องการความสะดวก ให้สามารถวัดเองได้ที่บ้าน ไม่ต้องพึ่งผู้เชี่ยวชาญ',
+                    img: 'https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?q=80&w=600&auto=format&fit=crop',
+                    sciences: ['เทคโนโลยีดิจิทัล', 'ระบบเซนเซอร์', 'การพัฒนาแอปพลิเคชัน'],
                     steps: [
-                        { era: 'อดีต', desc: 'แบบบีบมือ (ต้องมีผู้เชี่ยวชาญ)' },
-                        { era: 'พัฒนา', desc: 'ดิจิทัล (วัดเองได้ อ่านค่าง่าย)' },
-                        { era: 'ปัจจุบัน', desc: 'เชื่อมต่อ Smartphone เก็บข้อมูลผ่านแอปฯ' }
+                        { era: 'อดีต', title: 'แบบบีบมือ', desc: 'ต้องมีผู้เชี่ยวชาญในการตรวจวัด' },
+                        { era: 'พัฒนา', title: 'เครื่องวัดดิจิทัล', desc: 'ตรวจได้ด้วยตนเอง อ่านค่าตัวเลขได้ชัดเจน ขนาดเล็ก' },
+                        { era: 'ปัจจุบัน', title: 'เชื่อมต่อ Smartphone', desc: 'อ่านค่าผ่านแอปพลิเคชัน พกพาสะดวก เก็บข้อมูลได้' }
                     ]
                 },
                 {
-                    id: 3, title: 'การเย็บแผล',
-                    reason: 'ลดโอกาสติดเชื้อที่แผล ซึ่งอาจทำให้เสียชีวิต',
-                    sciences: ['วัสดุศาสตร์ (ฆ่าเชื้อ, ยืดหยุ่น)', 'เคมี (กาวโปรตีน)'],
+                    id: 3, title: 'หูฟังแพทย์ (Stethoscope)',
+                    reason: 'เดิมมีขนาดใหญ่ น้ำหนักมาก พกพาไม่สะดวก',
+                    img: 'https://images.unsplash.com/photo-1584982751601-97dcc096657c?q=80&w=600&auto=format&fit=crop',
+                    sciences: ['วัสดุศาสตร์', 'วิทยาศาสตร์เรื่องเสียง', 'เทคโนโลยีอิเล็กทรอนิกส์'],
                     steps: [
-                        { era: 'ระยะแรก', desc: 'ไหมเย็บแผล' },
-                        { era: 'พัฒนา', desc: 'ลวดเย็บแผล / เทปสเตอไรน์' },
-                        { era: 'ปัจจุบัน', desc: 'กาวจากโปรตีน (Activated with light)' }
+                        { era: 'อดีต', title: 'ทำจากไม้', desc: 'ขนาดใหญ่ น้ำหนักมาก' },
+                        { era: 'พัฒนา', title: 'โลหะ/ยาง', desc: 'ขนาดเล็กลง น้ำหนักเบา' },
+                        { era: 'ปัจจุบัน', title: 'หูฟังอิเล็กทรอนิกส์', desc: 'เชื่อมต่อคอมพิวเตอร์ผ่าน Bluetooth ช่วยขยายเสียงวินิจฉัย' }
                     ]
                 }
             ];
@@ -399,10 +439,10 @@
 
             // DATA 3: DISRUPTIVE EXAMPLES (หน้า 10)
             const disruptExamples = [
-                { name: 'Wifi', icon: 'ph-wifi-high' },
-                { name: 'Nano Material', icon: 'ph-hexagon' },
-                { name: 'Robotics', icon: 'ph-robot' },
-                { name: 'Driverless Car', icon: 'ph-car' }
+                { name: 'Wireless Internet', th: 'อินเทอร์เน็ตไร้สาย', icon: 'ph-wifi-high' },
+                { name: 'Nano Material', th: 'วัสดุนาโน', icon: 'ph-hexagon' },
+                { name: 'Robotics', th: 'เทคโนโลยีหุ่นยนต์', icon: 'ph-robot' },
+                { name: 'Driverless Car', th: 'ยานพาหนะไร้คนขับ', icon: 'ph-car' }
             ];
 
             return {
